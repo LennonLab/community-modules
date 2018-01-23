@@ -1,0 +1,41 @@
+
+
+```{r}
+#rsconnect::setAccountInfo(name='jaytlennon', token='F8514597B861B8FD199A346586E3EF58', secret='owstvIzgllZN3hxqTIXzXKOEwB7Mr0ayiPcOus6R')
+#library(rsconnect)
+#rsconnect::deployApp('/Users/lennonj/Desktop/shiny.jay/LotkaVolterraCompPrey')
+
+library(deSolve)
+
+
+model.exp <- function(time, y, parms) {
+  with(as.list(c(y, parms)),{
+    dN <- r *N
+    list(dN)
+  })
+}
+
+# y <- c(N = 0.1)
+# parms <- c(r = 0.1)
+# times <- seq(0, 100, 1)
+# 
+# out <- ode(y, times, model.exp, parms)
+# 
+# plot(out)
+
+
+model.log <-function(time, y, parms) {
+  with(as.list(c(y,parms)),{
+    dN <- r * N * (1 - N / K)
+    list(dN)
+  })
+}
+
+y <- c(N = 0.1)
+parms <- c(r = 0.1, K = 10)
+times <- seq(0, 100, 1)
+
+out <- ode(y, times, model.log, parms)
+
+plot(out)
+```
