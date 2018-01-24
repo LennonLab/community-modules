@@ -4,38 +4,51 @@
 #rsconnect::setAccountInfo(name='jaytlennon', token='F8514597B861B8FD199A346586E3EF58', secret='owstvIzgllZN3hxqTIXzXKOEwB7Mr0ayiPcOus6R')
 #library(rsconnect)
 #rsconnect::deployApp('/Users/lennonj/Desktop/shiny.jay/LotkaVolterraCompPrey')
+# https://www.r-bloggers.com/shiny-desolve-and-ggplot-play-nicely-together/
+# https://github.com/mbjoseph/2hostSIR/blob/master/server.R
+# https://github.com/mkiang/DiseaseDynamics/blob/master/server.R
+# http://onlinelibrary.wiley.com/doi/10.1002/psp4.12052/full
 
 library(deSolve)
+library(shiny)
 
-
-model.exp <- function(time, y, parms) {
-  with(as.list(c(y, parms)),{
-    dN <- r *N
-    list(dN)
-  })
-}
-
-# y <- c(N = 0.1)
-# parms <- c(r = 0.1)
-# times <- seq(0, 100, 1)
-# 
-# out <- ode(y, times, model.exp, parms)
-# 
-# plot(out)
-
-
-model.log <-function(time, y, parms) {
-  with(as.list(c(y,parms)),{
+growth <-function(time, init, parms) {
+  with(as.list(c(init, parms)),{
     dN <- r * N * (1 - N / K)
     list(dN)
   })
 }
 
-y <- c(N = 0.1)
-parms <- c(r = 0.1, K = 10)
-times <- seq(0, 100, 1)
+init <- c(N = 0.1) # initial conditions
+parms <- c(r = 0.1, K = 10) # logistic parameter
+times <- seq(0, 100, 1) # time span and increment
 
-out <- ode(y, times, model.log, parms)
+#out <- ode(init, times, growth, parms)
 
-plot(out)
+#plot(out)
 ```
+
+```{r}
+# Create reactive expression whose result will change over time
+# updating parameters; updatea init and parms 
+  dataInput <- reactive({
+    
+    init(growth) <- 0.1
+    parms(growth) = c(r = input$r, K = input$K
+    )
+
+    ode(init, times, growth, parms)
+  })
+```
+
+```{r}
+output$distPlot <- renderPlot({    
+  plot(dataInput()$N ~ dataInput()$time, type = "l", lwd = 2, col = "blue", 
+       xlim = c(0,input$time),
+                   main = "", xlab = "time", ylab = "population size",
+                   ylim = c(0,max(dataInput()$N)
+}
+```
+
+
+  

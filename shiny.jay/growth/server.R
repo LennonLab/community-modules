@@ -1,8 +1,10 @@
 # https://www.r-bloggers.com/shiny-desolve-and-ggplot-play-nicely-together/
+# https://github.com/mbjoseph/2hostSIR/blob/master/server.R
+# https://github.com/mkiang/DiseaseDynamics/blob/master/server.R
+# http://onlinelibrary.wiley.com/doi/10.1002/psp4.12052/full
 require(shiny)
 require(deSolve)
 require(ggplot2)
-
 
 # Define server logic 
 shinyServer(function(input, output) {
@@ -17,22 +19,22 @@ shinyServer(function(input, output) {
     )
   }
   
-    r <- 0.1
-    K <- 10
-    parms <- list(r, K)
-    state <- with(parms, )
-    
- state <- c(N = 0.1)
-#pars <- c(r = 0.1, K = 10)
-#times <- seq(0, 100, 1)
+    state <- c(N = 0.1)
+    parms <- c(r = 0.1, K = 10)
+    times <- seq(0, 100, 1)
   
- return(ode(y = state, times = times, func = derivs, parms = pars))
-}
+ return(ode(y, times, derivs, parms))
+  }
 
-
-
+  
+  
+  
+  
   output$guessPlot <- reactivePlot(function() {
-    tout<-seq(0, input$tmax, by = .01)
+    times <- seq(0, input$tmax, by = input$tint)
+    out <- growth(parms,times)
+    d <- 
+    
     guess_pars<-c(A = input$A, B = input$B, C = input$C)
     #     alpha<-input$alpha
     guess <- as.data.frame(solveLorenz(guess_pars, tout))
