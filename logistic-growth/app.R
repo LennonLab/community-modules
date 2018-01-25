@@ -1,3 +1,6 @@
+# rsconnect::setAccountInfo(name='jaytlennon', token='F8514597B861B8FD199A346586E3EF58', secret='owstvIzgllZN3hxqTIXzXKOEwB7Mr0ayiPcOus6R')
+# rsconnect::deployApp('/Users/lennonj/GitHub/community-modules/logistic-growth/')
+
 library(shiny)
 library(deSolve)
 library(ggplot2)
@@ -43,7 +46,7 @@ server <- function(input, output) {
   dataInput <- reactive({
     init <- c(N = as.numeric(input$N))
     parms <- c(r = input$r, K = input$K)
-    times <- seq(0, input$ts, 1)
+    times <- seq(0, as.numeric(input$ts), 1)
     
     lsoda(y = init, times = times, func = growth, parms = parms)
   })
