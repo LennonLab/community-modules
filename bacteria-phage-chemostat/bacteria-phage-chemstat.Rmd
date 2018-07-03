@@ -1,0 +1,164 @@
+---
+title: "Bacteria-Phage Chemostat"
+author: "Jay T. Lennon"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+header-includes:
+  - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+## OVERVIEW
+
+Bare bones model for testing shiny app
+
+## 1) SET WORKING DIRECTORY AND LOAD PACKAGE
+
+```{r}
+## Retrieve and Set Your Working Directory
+rm(list = ls())
+getwd()
+setwd("GitHub/community-modules/bacteria-phage-chemostat/")
+require("deSolve")
+````
+
+## 2) EQUATIONS
+
+```{r}
+phage<-function(t,x,parms){
+	with(as.list(c(parms,x)),{
+	  
+	  dR <- (r * d) - (N * umax * (R/(Ks + R))) * (y * (N * umax * (R/(Ks + R)))) - (R * d)
+	  dN <- (N * umax * (R/(Ks + R))) - (P * N * a) - (N * d)
+    dP <- (b * N * P * a) - (P * N * a) - (d * P) 
+	 	res=c(dR,dN,dP)
+		list(res)
+	})
+}
+
+times=1:1000
+```
+
+## SCENARIO 1: NO SCAVENGING, DORMANCY
+
+```{r}
+# parameters and initial conditions
+
+parmsP = c(d = 0.2, r = 0.5, umax = 0.7726, Ks = 0.0727, y = 2e-06, b = 80, a = 3e-06)
+init = c(R = 0.5, N= 1000, P = 10000)
+
+outP=ode(y=init,times=times,func=phage,parms=parmsP)
+
+
+
+
+# summary plots of model with no dormancy and no recycling
+dev.new()
+par(mfrow=c(2,3))
+plot(outNoDormNoScav[,1],log10(rowSums(outNoDormNoScav[,2:3])/(20e-15)),xlab="time",ylab="log10 cells",type='l')
+plot(outNoDormNoScav[,1],log10(outNoDormNoScav[,2]/(20e-15)),xlab="time",ylab="log10 active cells",type='l')
+if(any(outNoDormNoScav[,3]>0)){
+	plot(outNoDormNoScav[,1],log10(outNoDormNoScav[,3]/(20e-15)),xlab="time",ylab="log10 dormant cells",type='l')
+}else{
+	plot(outNoDormNoScav[,1],rep(0,nrow(outNoDormNoScav)),xlab="time",ylab="dormant cells",type='l')
+}
+plot(outNoDormNoScav[,1],outNoDormNoScav[,2]/rowSums(outNoDormNoScav[,2:3]),xlab="time",ylab="prop. active",type='l')
+plot(outNoDormNoScav[,1],outNoDormNoScav[,4],type='l',xlab='time',ylab='carbon (g)')
+```
+
+## SCENARIO 2: SCAVENGING, NO DORMANCY
+
+```{r}
+# parameters and initial conditions
+fracD=0
+parmsNoDorm = c(Va = 12, Ka = 0.0011, Ea = 0.75, da = 0.1, t2d = 0, dd=0.01, m=0.5)
+initNoDorm = c(A = 0.02-0.02*fracD, D=0.02*fracD, C = 0)
+
+outNoDorm=ode(y=initNoDorm,times=times,func=persist,parms=parmsNoDorm)
+
+# summary plots of model with no dormancy but with recycling
+dev.new()
+par(mfrow=c(2,3))
+plot(outNoDorm[,1],log10(rowSums(outNoDorm[,2:3])/(20e-15)),xlab="time",ylab="log10 cells",type='l')
+plot(outNoDorm[,1],log10(outNoDorm[,2]/(20e-15)),xlab="time",ylab="log10 active cells",type='l')
+if(any(outNoDorm[,3]>0)){
+	plot(outNoDorm[,1],log10(outNoDorm[,3]/(20e-15)),xlab="time",ylab="log10 dormant cells",type='l')
+}else{
+	plot(outNoDorm[,1],rep(0,nrow(outNoDorm)),xlab="time",ylab="dormant cells",type='l')
+}
+plot(outNoDorm[,1],outNoDorm[,2]/rowSums(outNoDorm[,2:3]),xlab="time",ylab="prop. active",type='l')
+plot(outNoDorm[,1],outNoDorm[,4],type='l',xlab='time',ylab='carbon (g)')
+```
+
+## SCENARIO 3: SCAVENGING AND DORMANCY
+
+```{r}
+# parameters and initial conditions
+fracD=1e-5
+parms = c(Va = 12, Ka = 0.0011, Ea = 0.75, da = 0.1, t2d = 0.0001, dd=0.01, m=0.5)
+init = c(A = 0.02-0.02*fracD, D=0.02*fracD, C = 0)
+
+out=ode(y=init,times=times,func=persist,parms=parms)
+
+# summary plots of model with dormancy and recycling
+dev.new()
+par(mfrow=c(2,3))
+plot(out[,1],log10(rowSums(out[,2:3])/(20e-15)),xlab="time",ylab="log10 cells",type='l')
+plot(out[,1],log10(out[,2]/(20e-15)),xlab="time",ylab="log10 active cells",type='l')
+if(any(out[,3]>0)){
+	plot(out[,1],log10(out[,3]/(20e-15)),xlab="time",ylab="log10 dormant cells",type='l')
+}else{
+	plot(out[,1],rep(0,nrow(out)),xlab="time",ylab="dormant cells",type='l')
+}
+plot(out[,1],out[,2]/rowSums(out[,2:3]),xlab="time",ylab="prop. active",type='l')
+plot(out[,1],out[,4],type='l',xlab='time',ylab='carbon (g)')
+```
+
+## PLOTTING ALL THREE SCENARIOS
+
+```{r}
+png(filename="~/GitHub/Dimensions/Aim1/output/dormancy.death.model.png",
+    width = 1200, height = 900, res = 96*2)
+
+par(mar = c(5, 7, 5, 7))
+
+decay.plot <- plot(outNoDormNoScav[,1], log10(rowSums(outNoDormNoScav[,2:3])/(20e-15)),
+        type = "l", lty = 1, col = "red", yaxt = "n", xaxt = "n", lwd = 6,
+        cex.lab = 1.5, cex.axis = 2, xlab = NA, ylab = NA,
+        xlim = c(-100, 1100), ylim = c(0,12))
+mtext(expression('Bacteria mL'^-1), side = 2, outer = TRUE, cex = 2, 
+      line = -2.5, adj = 0.5)
+mtext('Time (d)', side = 1, outer = TRUE, cex = 2, 
+      line = -1.5, adj = 0.5)
+
+box(lwd = 6)
+
+lines(outNoDorm[,1],log10(rowSums(outNoDorm[,2:3])/(20e-15)), type = "l", 
+      col = "darkgreen", lty = 1, lwd = 6)
+
+lines(out[,1],log10(rowSums(out[,2:3])/(20e-15)),type = "l", 
+      col = "blue", lty = 1, lwd = 6)
+
+# Add ticks and tick labels
+
+axis(side = 2, lwd.ticks = 6, cex.axis = 2, las = 1,
+     labels = expression(10^0, 10^4, 10^8, 10^12),
+     at = c(0, 4, 8, 12))
+ 
+axis(side = 4, lwd.ticks = 6, cex.axis = 1.5, las = 1,
+    at=c(0, 4, 8, 12), labels = F)
+ 
+axis(side = 1, lwd.ticks = 6, cex.axis = 2, las = 1,
+    labels = c(0, 500, 1000), at = c(0, 500, 1000), mgp = c(3, 1.5, 0))
+
+axis(side = 3, lwd.ticks = 6, cex.axis = 1.5, las = 1,
+    at = c(0, 500, 1000), labels = F)
+
+dev.off()
+graphics.off()
+
+# plot(outNoDormNoScav[,1],log10(rowSums(outNoDormNoScav[,2:3])/(20e-15)),xlab="time",ylab="log10 cells",type='l',lwd=3)
+# lines(outNoDorm[,1],log10(rowSums(outNoDorm[,2:3])/(20e-15)),lty=2,lwd=3)
+# lines(out[,1],log10(rowSums(out[,2:3])/(20e-15)),col='grey',lwd=3)
+# legend('topright',c('no dormancy, no scavenging','no dormancy, scavenging','dormancy, scavenging'),lty=c(1,2,1),col=c('black','black','grey'),box.lty=0)
+```
