@@ -1,0 +1,10 @@
+name: bacteria-phage-eco
+title:
+username:
+account: lennonlab
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 384836
+bundleId: 1491422
+url: https://lennonlab.shinyapps.io/bacteria-phage-eco/
+when: 1532096616.23188

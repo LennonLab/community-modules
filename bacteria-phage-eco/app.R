@@ -1,6 +1,11 @@
-# rsconnect::setAccountInfo(name='jaytlennon', token='F8514597B861B8FD199A346586E3EF58', secret='owstvIzgllZN3hxqTIXzXKOEwB7Mr0ayiPcOus6R')
+# After modifying code and running app locally, you need to set up the account
+# Visit https://www.shinyapps.io and get token then run following in console:
+# rsconnect::setAccountInfo(name='lennonlab', token='F8514597B861B8FD199A346586E3EF58', secret='owstvIzgllZN3hxqTIXzXKOEwB7Mr0ayiPcOus6R')
+# Then run following in console to deploy app
 # rsconnect::deployApp('/Users/lennonj/GitHub/community-modules/bacteria-phage-eco/')
+# You site should be ready to use: https://lennonlab.shinyapps.io/bacteria-phage-eco/
 
+# Load packages
 library(shiny)
 library(deSolve)
 library(ggplot2)
@@ -99,7 +104,7 @@ server <- function(input, output) {
        geom_path(size = 2) + 
        theme_minimal() +
        ylab("Phage Density, P") + 
-       xlab("Populaton Density") + 
+       xlab("Host Density, N") + 
        theme(axis.title = element_text(size = 20),
              axis.text  = element_text(size = 16))
   })

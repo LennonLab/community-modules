@@ -1,3 +1,11 @@
+# After modifying code and running app locally, you need to set up the account
+# Visit https://www.shinyapps.io and get token then run following in console:
+# rsconnect::setAccountInfo(name='lennonlab', token='F8514597B861B8FD199A346586E3EF58', secret='owstvIzgllZN3hxqTIXzXKOEwB7Mr0ayiPcOus6R')
+# Then run following in console to deploy app
+# rsconnect::deployApp('/Users/lennonj/GitHub/community-modules/bacteria-phage-evo/')
+# You site should be ready to use: https://lennonlab.shinyapps.io/bacteria-phage-evo/
+
+
 # rsconnect::setAccountInfo(name='jaytlennon', token='F8514597B861B8FD199A346586E3EF58', secret='owstvIzgllZN3hxqTIXzXKOEwB7Mr0ayiPcOus6R')
 # rsconnect::deployApp('/Users/lennonj/GitHub/community-modules/bacteria-phage-evo/')
 
@@ -98,8 +106,8 @@ server <- function(input, output) {
        ggplot(aes(y = Nr, x = Ns)) +
        geom_path(size = 2) +
        theme_minimal() +
-       ylab("Nr") +
-       xlab("Ns") +
+       ylab("Resistant Host Density (Nr)") +
+       xlab("Sensitive Host Density (Ns)") +
        theme(axis.title = element_text(size = 20),
              axis.text  = element_text(size = 16))
   })
