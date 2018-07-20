@@ -106,8 +106,8 @@ server <- function(input, output) {
        ggplot(aes(y = Nr, x = Ns)) +
        geom_path(size = 2) +
        theme_minimal() +
-       ylab("Nr") +
-       xlab("Ns") +
+       ylab("Resistant Host Density (Nr)") +
+       xlab("Sensitive Host Density (Ns)") +
        theme(axis.title = element_text(size = 20),
              axis.text  = element_text(size = 16))
   })

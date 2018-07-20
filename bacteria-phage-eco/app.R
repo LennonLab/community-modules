@@ -104,7 +104,7 @@ server <- function(input, output) {
        geom_path(size = 2) + 
        theme_minimal() +
        ylab("Phage Density, P") + 
-       xlab("Populaton Density") + 
+       xlab("Host Density, N") + 
        theme(axis.title = element_text(size = 20),
              axis.text  = element_text(size = 16))
   })
