@@ -1,5 +1,5 @@
 # rsconnect::setAccountInfo(name='jaytlennon', token='F8514597B861B8FD199A346586E3EF58', secret='owstvIzgllZN3hxqTIXzXKOEwB7Mr0ayiPcOus6R')
-# rsconnect::deployApp('/Users/lennonj/GitHub/community-modules/bacteria-phage-chemostat/')
+# rsconnect::deployApp('/Users/lennonj/GitHub/community-modules/bacteria-phage-eco/')
 
 library(shiny)
 library(deSolve)
@@ -18,7 +18,7 @@ predation <-function(times, init, parms) {
 
 # Construct Shiny App
 ui <- fluidPage(
-  titlePanel("Chemostat Model"),
+  titlePanel("Chemostat Ecological Model"),
   
   sidebarLayout(
     sidebarPanel(
@@ -33,21 +33,21 @@ ui <- fluidPage(
       
       h4("Parameters"),
       sliderInput("d", label = "dilution rate, d",
-                  min = 0.001, max = 0.5, value = 0.1, step = 0.01),
-      sliderInput("r", label = "resource concentration, r",
+                  min = 0.001, max = 0.5, value = 0.15, step = 0.01),
+      sliderInput("r", label = "resource concentration (r)",
                   min = 0.01, max = 25, value = 0.5, step = 0.1),
-      sliderInput("umax", label = "maximum growth rate, umax", 
+      sliderInput("umax", label = "maximum growth rate (umax)", 
                   min = 0.05, max = 5, value = 0.75, step = 0.05),
-      sliderInput("Ks", label = "half saturation constant, Ks", 
+      sliderInput("Ks", label = "half saturation constant (Ks)", 
                   min = 0.005, max = 1.5, value = 0.075, step = 0.005),
-      sliderInput("y", label = "bacterial growth yield, y",
+      sliderInput("y", label = "bacterial growth yield (y)",
                   min = 1e-07, max = 1e-05, value = 0.000002, step = 1e-06),
-      sliderInput("b", label = "burst size, b",
+      sliderInput("b", label = "burst size (b)",
                   min = 10, max = 200, value = 80, step = 10),
       # a.ticks <- c(1e-07, 2.5e-07, 5e-07, 7.5e-07, 10e-07),
       # sliderInput(inputId = "a", label = "adsorption rate, a", min = 1, max = 5,
       #             value = 1, ticks = a.ticks, step =1)
-    sliderInput("a", label = "adsorption rate, a",
+    sliderInput("a", label = "adsorption rate (a)",
                 min = 1e-07, max = 1e-05, value = 3e-06, step = 1e-06)
   ),
   
