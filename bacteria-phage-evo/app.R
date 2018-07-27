@@ -17,10 +17,10 @@ library(tidyr)
 # Define functions
 predation <-function(times, init, parms) {
   with(as.list(c(init, parms)),{
-    dR <- (r * d) - (Ns * umax * (R/(Ks + R))) * (y * (Ns * umax * (R/(Ks + R)))) - (Nr * umax * (1-uc) * (R/(Ks + R))) * (y * (Nr * umax * (1-uc) * (R/(Ks + R)))) - (R * d)
+    dR <- (r * d) - (Ns * umax * (R/(Ks + R)) * y)  - (Nr * umax * (1-uc) * (R/(Ks + R)) * y)  - (R * d)
     dNs <- (Ns * umax * (R/(Ks + R))) - (P * Ns * a) - (Ns * d)
-    dNr <- (Nr * ((1-uc) * umax) * (R/(Ks + R))) - (P * Nr * a * (1-ac)) - (Nr * d)
-    dP <- (b * Ns * P * a) - (P * Ns * a) + (b * Nr * P * a * (1-ac)) - (P * Nr * a * (1-ac)) - (d * P) 
+    dNr <- (Nr * (umax * (1-uc)) * (R/(Ks + R))) - (P * Nr * (a * (1-ac))) - (Nr * d)
+    dP <- (b * Ns * P * a) - (P * Ns * a) + (b * Nr * P * (a * (1-ac))) - (P * Nr * (a * (1-ac))) - (d * P) 
     list(c(dR, dNs, dNr, dP))
   })
 }
@@ -43,7 +43,7 @@ ui <- fluidPage(
       
       h4("Parameters"),
       sliderInput("d", label = "dilution rate (d)",
-                  min = 0.001, max = 0.5, value = 0.15, step = 0.01),
+                  min = 0.001, max = 0.5, value = 0.2, step = 0.01),
       sliderInput("r", label = "resource concentration (r)",
                   min = 0.01, max = 25, value = 0.5, step = 0.1),
       sliderInput("umax", label = "maximum growth rate (umax)", 
@@ -59,7 +59,7 @@ ui <- fluidPage(
       sliderInput("a", label = "adsorption rate (a)",
                   min = 1e-07, max = 1e-05, value = 3e-06, step = 1e-06),
       sliderInput("ac", label = "reduced absorption on mutant (%)", 
-                  min = 0, max = 1, value = 0.8, step = 0.01)
+                  min = 0, max = 1, value = 1, step = 0.01)
   ),
   
     mainPanel(

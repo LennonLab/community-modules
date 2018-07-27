@@ -14,7 +14,7 @@ library(tidyr)
 # Define functions
 predation <-function(times, init, parms) {
   with(as.list(c(init, parms)),{
-    dR <- (r * d) - (N * umax * (R/(Ks + R))) * (y * (N * umax * (R/(Ks + R)))) - (R * d)
+    dR <- (r * d) - (N * umax * (R/(Ks + R)) * y) - (R * d)
     dN <- (N * umax * (R/(Ks + R))) - (P * N * a) - (N * d)
     dP <- (b * N * P * a) - (P * N * a) - (d * P) 
     list(c(dR, dN, dP))
@@ -103,8 +103,8 @@ server <- function(input, output) {
        ggplot(aes(y = P, x = N)) + 
        geom_path(size = 2) + 
        theme_minimal() +
-       ylab("Phage Density, P") + 
-       xlab("Host Density, N") + 
+       ylab("Phage Density (P)") + 
+       xlab("Host Density (N)") + 
        theme(axis.title = element_text(size = 20),
              axis.text  = element_text(size = 16))
   })
