@@ -5,6 +5,6 @@ account: lennonlab
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 384842
-bundleId: 1491457
+bundleId: 1502846
 url: https://lennonlab.shinyapps.io/bacteria-phage-evo/
-when: 1532097380.93913
+when: 1532658242.94463
